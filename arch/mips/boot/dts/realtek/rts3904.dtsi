@@ -1,0 +1,142 @@
+#include "rts3903_base.dtsi"
+
+/ {
+	ocp {
+		efuse: efuse@18865000 {
+			status = "okay";
+		};
+
+		eth0: rtl8168@18400000 {
+			status = "okay";
+		};
+
+		crypto: crypto@18600000 {
+			status = "okay";
+		};
+
+		spi0: spic@0x18030000 {
+			status = "okay";
+
+			flash0: flash@0 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				compatible = "mxic,m25p80", "jedec,spi-nor",
+					"spi-flash";
+				spi-max-frequency = <25000000>;
+				reg = <0>;
+				mode = <0>;
+				spi-num-slaves = <0>;
+				spi-fifo-size = <64>;
+				spi-baudr-div = <1>;
+			};
+
+		};
+
+		i2c: i2c@0x18880000 {
+			status = "okay";
+
+			rtp590x: rtp5903@30 {
+				compatible = "realtek,rtp5903";
+				reg = <0x30>;
+				status = "okay";
+			};
+
+		};
+
+		dmahost: dma@18020000 {
+			status = "okay";
+		};
+
+		usb_ehci: ehci@18100000 {
+			status = "okay";
+		};
+
+		usb_ohci: ohci@18180000 {
+			status = "okay";
+		};
+
+		usb_device: dwc_otg@18200000 {
+			status = "okay";
+		};
+
+		usb_phy: usbphy@18140000 {
+			status = "okay";
+		};
+
+		sdhc: sdhc@18300000 {
+			status = "okay";
+		};
+
+		pwm: pwm@0x18820000 {
+			status = "okay";
+		};
+
+		watchdog: watchdog@0x18862000 {
+			status = "okay";
+		};
+
+		thermal: thermal@0x18864000 {
+			status = "okay";
+		};
+
+		ddrc: ddrc@0x18010000 {
+			status = "okay";
+		};
+
+		saradc: saradc@0x18840000 {
+			status = "okay";
+		};
+
+		pinctrl: pinctrl@0x18800000UL {
+			status = "okay";
+		};
+
+		rtc: rtc@0x18850000 {
+			status = "okay";
+		};
+
+		rts_mcu: rts_mcu@18040000 {
+			status = "okay";
+		};
+
+		rts_soc_camera: rts_soc_camera@18040000 {
+			status = "okay";
+		};
+
+		rts_h264_hx280enc@18060000 {
+			status = "okay";
+		};
+
+		rts_mjpeg_enc: rts_jpgenc@1805e000 {
+			status = "okay";
+		};
+
+		rts_osd_enc: rts_osd2@1805c000 {
+			status = "okay";
+		};
+
+		audio_dma: audio_dma@18500000 {
+			status = "okay";
+		};
+
+		audio_i2s: audio_i2s@18500064 {
+			status = "okay";
+		};
+
+		audio_codec: audio_codec@18500070 {
+			status = "okay";
+		};
+
+		uart0: serial@18810000 {
+			status = "okay";
+		};
+
+		uart1: serial@18810100 {
+			status = "okay";
+		};
+
+		uart2: serial@18810200 {
+			status = "okay";
+		};
+	};
+};

@@ -1,0 +1,33 @@
+Realtek crypto accelerator present in RTS39xx IPCam processors.
+
+The crypto accelerator provides hardware acceleration for
+AES/DES/3DES algorithms.
+
+Required properties:
+
+- compatible: "realtek,rts3903-crypto"
+- reg: Offset and length of the register set for the block
+- interrupts: The designated IRQ line for the block
+- clocks: Clock specifiers
+- clock-names: identifier string for clock specifiers
+- resets: list of two reset specifiers
+- reset-names: identifier string for reset specifiers
+- aes/des/3des: list of supported algorithms
+
+Example:
+
+	crypto: crypto@18600000 {
+		compatible = "realtek,rts3903-crypto";
+		reg = <0x18600000 0x10000>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_ENCPY>;
+		clocks = <&clks RLX_CLK_CIPHER_CK>;
+		clock-names = "cipher_ck";
+		resets = <&reset FORCE_RESET_CIPHER>,
+			<&sysmem SYS_MEM_SD_CIPHER>;
+		reset-names = "rst", "sd";
+		aes = "ecb", "cbc", "cbccs1", "cbccs2", "cbccs3", "ctr";
+		des = "ecb", "cbc", "cbccs1", "cbccs2", "cbccs3", "ctr";
+		3des = "ecb", "cbc", "cbccs1", "cbccs2", "cbccs3", "ctr";
+	};
+

@@ -1,0 +1,15 @@
+menuconfig MTD_SPI_NAND
+	tristate "SPI NAND device support"
+	depends on MTD
+	select MTD_NAND
+	help
+	  This is the framework for the SPI NAND.
+
+if MTD_SPI_NAND
+config SPI_RTS_QUADSPI_NFC
+	tristate "Realtek Quad SPI Nand Flash Controller"
+	help
+	  This enables support for the Quad SPI Nand Flash Controller in
+	  master mode.
+
+endif # MTD_SPI_NAND

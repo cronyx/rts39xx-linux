@@ -1,0 +1,23 @@
+Realtek rts39xx SoC USB Device Properties
+
+Required properties:
+- compatible: "realtek,rts3903-otg"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain ethernet controller interrupt
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+
+Example:
+
+usb_device: dwc_otg@18200000 {
+			compatible = "realtek,rts3903-otg";
+			reg = <0x18200000 0x40000>;
+			interrupt-parent = <&cpuintc>;
+			interrupts = <BSP_IRQ_USBDEV>;
+			resets = <&reset FORCE_RESET_U2DEV>,	\
+			<&sysmem SYS_MEM_SD_U2DEV>;
+			reset-names = "reset-usb-device", "u2dev-sysmem-up";
+};

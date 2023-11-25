@@ -1,0 +1,14 @@
+Realtek Clock Controller
+
+Required properties:
+- compatible: Should be "realtek,rts3903-clocks" or "realtek,rts3913-clocks"
+- reg: Address range of the clock registers
+- #clock-cells: Should be 1
+
+Example:
+
+	clks: clks@18861000  {
+		compatible = "realtek,rts3903-clocks";
+		#clock-cells = <1>;
+		reg = <0x18861000 0x1000 0x18864100 0x400>;
+	};

@@ -1,0 +1,27 @@
+Realtek rts39xx SoC Thermal Sensor Properties
+
+Required properties:
+- compatible: "realtek,rts3903-tm"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain ethernet controller interrupt
+- num-trips : number of total trip points, this is required, set it 0 if none,
+  if greater than 0, the following properties must be defined
+- tripN-temp : temperature of trip point N, should be in ascending order
+- thermal_k : temperature mapping curve used to adjusting reading
+
+Example:
+
+thermal: thermal@0x18864000 {
+	compatible = "realtek,rts3903-tm";
+	reg = <0x18864000 0x100>;
+	interrupts = <BSP_IRQ_OTHERS>;
+	interrupt-parent = <&cpuintc>;
+	num-trips = <2>;
+	trip0-temp = <0>;
+	trip1-temp = <80000>;
+	thermal_k = /bits/ 32 <14333 18538 23329
+				28806 33907 39053 44489 49630
+				54314 59211 64267 69322 74799
+				79665 84613 89826 94970 100121>;
+};

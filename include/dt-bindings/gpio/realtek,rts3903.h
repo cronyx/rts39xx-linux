@@ -1,0 +1,6 @@
+#ifndef _DT_BINDINGS_GPIO_RTS3903_H
+#define _DT_BINDINGS_GPIO_RTS3903_H
+
+#define RTS_NUM_GPIOS   31
+
+#endif

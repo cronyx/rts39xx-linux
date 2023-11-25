@@ -1,0 +1,37 @@
+* Realtek H265 controller
+
+Required properties:
+- compatible: Should be "realtek,rts3913-vpucodec"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain the h265 interrupt number
+- clocks: List of clock for H265 controller
+- clock-names: List of clock name strings sorted in the same order as
+the clocks property
+- clock-frequency : List of clock frequency sorted in the same order as
+the clocks property
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+
+
+Example:
+	rts_h265_vpucodec@0x180c0000 {
+		compatible = "realtek,rts3913-vpucodec";
+		reg = <0x180c0000 0x00040000>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_H265>;
+		clocks = <&clks RLX_CLK_H265_CK>, \
+				<&clks RLX_CLK_H265_ACLK_CK>, \
+				<&clks RLX_CLK_H265_BCLK_CK>, \
+				<&clks RLX_CLK_H265_CCLK_CK>;
+		clock-names = "h265_ck", "h265_aclk_ck", \
+				"h265_bclk_ck", "h265_cclk_ck";
+		clock-frequency = <0 0 120000000 120000000>;
+		resets = <&reset FORCE_RESET_H265_AXI>, \
+				<&reset FORCE_RESET_H265_BPU>, \
+				<&reset FORCE_RESET_H265_CORE>, \
+				<&sysmem SYS_MEM_SD_H265>;
+		reset-names = "axi", "bpu", "core", "sysmem-up";
+	};

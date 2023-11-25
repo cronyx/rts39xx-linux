@@ -1,0 +1,19 @@
+* Realtek Osd controller
+
+Required properties:
+- compatible: Should be "realtek,rts3903-osd2"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain the osd interrupt number
+- osd-config: Configuration of osd
+- status: Either "ok" or "disabled"
+
+Example:
+	rts_osd_enc: rts_osd2@1805c000 {
+		compatible = "realtek,rts3903-osd2";
+		reg = <0x1805c000 0x00001ffd>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_MCU8051>;
+		osd-config = <&osd2cfg>;
+		status = "disabled";
+	};

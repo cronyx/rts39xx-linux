@@ -1,0 +1,26 @@
+Realtek audio DMA engine
+
+Required properties:
+- compatible: "realtek,rts3903-adma"
+- reg: physical base address of the audio dma engine and length of memory mapped
+region
+- memory-region: the audio reserved memory
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts : Should contain the i2s interrupt number
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+
+Example:
+
+	audio_dma: audio_dma@18500000 {
+		compatible = "realtek,rts3903-adma";
+		reg = <0x18500000 0x64 0x185000E4 0xc>;
+		memory-region = <&audio_reserved>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_I2S>;
+		resets = <&sysmem SYS_MEM_SD_AUDIO>;
+		reset-names = "audio-sysmem-up";
+		status = "disabled";
+	};

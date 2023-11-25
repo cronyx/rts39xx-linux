@@ -1,0 +1,13 @@
+Realtek Watchdog Timer Controller
+
+Required properties:
+- compatible: "realtek,rts3903-wd"
+- reg: Address range of the WDT registers
+
+Example:
+
+	watchdog: watchdog@0x18862000 {
+		compatible = "realtek,rts3903-wd";
+		reg = <0x18862000 0x10000>;
+		status = "disabled";
+	};

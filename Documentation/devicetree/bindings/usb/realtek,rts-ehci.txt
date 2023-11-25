@@ -1,0 +1,24 @@
+Realtek rts39xx SoC USB EHCI controllers
+
+Required properties:
+  - compatible : should be "realtek,rts3903-ehci".
+  - reg : should contain at least address and length of the standard EHCI
+    register set for the device. Optional platform-dependent registers
+    (debug-port or other) can be also specified here, but only after
+    definition of standard EHCI registers.
+  - interrupt-parent: Phandle of the parent interrupt controller
+  - interrupts : one EHCI interrupt should be described here.
+  - resets: List of phandle and reset specifier pairs, one pair for
+  each reset signal that affects the device
+  - reset-names: List of reset signal name strings sorted in the same order as
+  the resets property
+
+Example:
+	usb_ehci: ehci@18100000 {
+			compatible = "realtek,rts3903-ehci";
+			reg = <0x18100000 0x1000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_USBHOST>;
+			resets = <&reset FORCE_RESET_U2HOST>;
+			reset-names = "reset-usb-host";
+	};

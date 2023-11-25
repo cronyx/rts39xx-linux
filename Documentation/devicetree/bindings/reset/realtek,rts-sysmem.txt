@@ -1,0 +1,43 @@
+RTS3903 Reset Controller
+=============================================================================
+
+This binding describes the memory power control blocks in the RTS3903 SoC
+System controller registers.
+
+Please refer to Documentation/devicetree/bindings/reset/reset.txt
+for common reset controller binding usage.
+
+Required properties:
+
+- compatible: Contains "realtek,rts3903-sysmem"
+
+- #reset-cells: Contains 1
+
+Example:
+
+	sysmem: reset-controller@18866000 {
+		compatible = "realtek,rts3903-sysmem";
+		reg = <0x18866000 0x1000>;
+		#reset-cells = <1>;
+	};
+
+Specifying reset control of devices
+=======================================
+
+Device nodes should specify the reset channel required in their "resets"
+property, containing a phandle to the RTS3903 sysmem device node and an
+index specifying which reset to use, as described in
+Documentation/devicetree/bindings/reset/reset.txt.
+
+Example:
+
+	crypto: crypto@18600000 {
+		...
+		resets = <&sysmem SYS_MEM_SD_CIPHER>;
+		reset-names = "sd";
+		...
+	};
+
+Macro definitions for the supported resets can be found in:
+include/dt-bindings/reset/rts-sysmem.h
+

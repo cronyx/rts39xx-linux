@@ -1,0 +1,30 @@
+Realtek I2C Controller
+
+Required properties:
+- compatible: "realtek,rts3903-i2c"
+- reg: Address range of the i2c registers
+- interrupt: Should contain the i2c interrupt number
+- interrupt-parent: Should be the phandle for the interrupt controller
+  that services interrupts for this device
+- clocks: Clock for i2c controller
+- clock-names: Name of clock
+- resets: List of phandle and reset specifier pairs, one pair for
+  each reset signal that affects the device.
+- reset-names: List of reset signal name strings sorted in the same order as
+  the resets property.
+
+Example:
+
+	i2c: i2c@0x18880000 {
+		compatible = "realtek,rts3903-i2c";
+		reg = <0x18880000 0x1000>;
+		interrupts = <BSP_IRQ_OTHERS>;
+		interrupt-parent = <&cpuintc>;
+		clocks = <&clks RLX_CLK_I2C_CK>;
+		clock-names = "i2c_ck";
+		resets = <&reset FORCE_RESET_I2C>;
+		reset-names = "reset-i2c";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "disabled";
+	};

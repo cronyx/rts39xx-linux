@@ -1,0 +1,18 @@
+Realtek Real Time Clock
+
+Required properties:
+- compatible: "realtek,rts3903-rtc"
+- reg: Address range of the RTC registers
+- interrupt: Should contain the RTC interrupt number
+- interrupt-parent: Should be the phandle for the interrupt controller
+  that services interrupts for this device
+
+Example:
+
+	rtc: rtc@0x18850000 {
+		compatible = "realtek,rts3903-rtc";
+		reg = <0x18850000 0x1000>;
+		interrupts = <RTC_ALARM0_INT_IRQ>;
+		interrupt-parent = <&cpuintc>;
+		status = "disabled";
+	};

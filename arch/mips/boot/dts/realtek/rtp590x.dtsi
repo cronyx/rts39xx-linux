@@ -1,0 +1,55 @@
+
+&rtp590x{
+
+	regulators {
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ldo1_reg: regulator@0{
+			reg = <0>;
+			regulator-compatible = "RTP_LDO1";
+		};
+
+		ldo2_reg: regulator@1 {
+			reg = <1>;
+			regulator-compatible = "RTP_LDO2";
+		};
+
+		ldo3_reg: regulator@2 {
+			reg = <2>;
+			regulator-compatible = "RTP_LDO3";
+		};
+
+		ldo4_reg: regulator@3 {
+			reg = <3>;
+			regulator-compatible = "RTP_LDO4";
+		};
+
+		ldo5_reg: regulator@4 {
+			reg = <4>;
+			regulator-compatible = "RTP_LDO5";
+		};
+
+		dcdc1_reg: regulator@5 {
+			reg = <5>;
+			regulator-compatible = "RTP_BUCK1";
+		};
+
+		dcdc2_reg: regulator@6 {
+			reg = <6>;
+			regulator-compatible = "RTP_BUCK2";
+		};
+
+		dcdc3_reg: regulator@7 {
+			reg = <7>;
+			regulator-compatible = "RTP_BUCK3";
+		};
+
+		dcdc4_reg: regulator@8 {
+			reg = <8>;
+			regulator-compatible = "RTP_BUCK4";
+		};
+	};
+
+};

@@ -1,0 +1,28 @@
+Realtek DesignWare SSI Interface.
+
+Required properties:
+- compatible : "realtek,dw-apb-ssi"
+- reg : The register base for the controller.
+- interrupts : Should contain the SSI interrupt number.
+- #address-cells : <1>, as required by generic SPI binding.
+- #size-cells : <0>, also as required by generic SPI binding.
+- clocks : Clock for ssi controller
+
+Optional properties:
+- num-cs : The number of chipselects. If omitted, this will default to 4.
+- reg-io-width : The I/O register width (in bytes) implemented by this
+  device.  Supported values are 2 or 4 (the default).
+- interrupt-parent: Should be the phandle for the interrupt controller
+
+Child nodes as per the generic SPI binding.
+
+Example:
+
+	spi@0x18830000 {
+		compatible = "realtek,dw-apb-ssi";
+		reg = <0x18830000 0x10000>;
+		interrupts = <BSP_IRQ_OTHERS>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		num-cs = <2>;
+	};

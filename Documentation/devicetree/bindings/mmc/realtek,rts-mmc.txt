@@ -1,0 +1,39 @@
+* Realtek rts39xx SoC SDIO host controller
+
+Required properties/subnode:
+- compatible: Should be "realtek,rts3903-sdhc" or "realtek,rts3913-sdhc2"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain sdio controller interrupt
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device.
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property.
+- disable-wp: make card always writable.
+- cd-inverted: when present, polarity on the CD line is inverted.
+- bus-width: Number of data lines, can be <1>, <4>, or <8>.  The default
+  will be <1> if the property is absent.
+- cap-sd-highspeed: SD high-speed timing is supported
+- cap-mmc-highspeed: MMC high-speed timing is supported
+- sd-uhs-sdr12: SD UHS SDR12 speed is supported
+- sd-uhs-sdr25: SD UHS SDR25 speed is supported
+- sd-uhs-sdr50: SD UHS SDR50 speed is supported
+
+Example:
+	sdhc: sdhc@18300000 {
+		compatible = "realtek,rts3903-sdhc";
+		reg = <0x18300000 0x100000>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_SD>;
+		resets = <&reset FORCE_RESET_SD>,    \
+			<&sysmem SYS_MEM_SD_SDIO>;
+		reset-names = "reset-sd-device", "sdio-sysmem-up";
+		disable-wp;
+		cd-inverted;
+		bus-width = <8>;
+		cap-sd-highspeed;
+		cap-mmc-highspeed;
+		sd-uhs-sdr12;
+		sd-uhs-sdr25;
+		sd-uhs-sdr50;
+	};

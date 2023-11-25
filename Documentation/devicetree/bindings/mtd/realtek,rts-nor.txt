@@ -1,0 +1,22 @@
+* Realtek rts39xx spi nor flash controller
+
+Required properties/subnode:
+- compatible: Should be "realtek,rts3903-quadspi"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain sdio controller interrupt
+- clocks : Clock specifiers
+- clock-names : identifier string for clock specifiers
+
+Example:
+	spi0: spic@0x18030000 {
+		compatible = "realtek,rts3903-quadspi";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x18030000 0x10000>;
+		clocks = <&clks RLX_CLK_BUS_CK>;
+		clock-names = "spi_ck";
+		spi-max-frequency = <60000000>;
+		interrupt-parent = <&cpuintc>;
+		interrupts = <BSP_IRQ_SPI>;
+	};

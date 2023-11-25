@@ -1,0 +1,28 @@
+* Realtek H264 controller
+
+Required properties:
+- compatible: Should be "realtek,rts3903-h264"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain the h264 interrupt number
+- clocks: Clock for h264 controller
+- clock-names: Name of clock
+- clock-frequency : Clock frequency for h264 controller
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+
+Example:
+	rts_h264_hx280enc@18060000 {
+		compatible = "realtek,rts3903-h264";
+		reg = <0x18060000 0x00020000>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_H264>;
+		clocks = <&clks RLX_CLK_H264_CK>;
+		clock-names = "h264_clk";
+		clock-frequency = <333333333>;
+		resets = <&reset FORCE_RESET_H264>;
+		reset-names = "h264_rst";
+		status = "disabled";
+	};

@@ -1,0 +1,33 @@
+Realtek CPU Interrupt Controller
+
+Required properties:
+- compatible: "mti,cpu-interrupt-controller"
+- interrupt-controller : Identifies the node as an interrupt controller.
+- #interrupt-cells : Specifies the number of cells needed to encode an
+  interrupt source.
+
+Example:
+
+	cpuintc: cpuintc@0 {
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		compatible = "mti,cpu-interrupt-controller";
+	};
+
+Realtek VEC Interrupt Controller
+
+Required properties:
+- compatible: "realtek,vec-interrupt-controller"
+- interrupt-controller : Identifies the node as an interrupt controller.
+- #interrupt-cells : Specifies the number of cells needed to encode an
+  interrupt source.
+
+Example:
+
+	vecintc: vecintc@0 {
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		compatible = "realtek,vec-interrupt-controller";
+	};

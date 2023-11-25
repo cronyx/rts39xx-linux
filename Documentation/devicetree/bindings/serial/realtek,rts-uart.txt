@@ -1,0 +1,35 @@
+* Universal Asynchronous Receiver/Transmitter (UART)
+
+- compatible: "snps,dw-apb-uart"
+
+  Compatibility with all RTS39xx SOCs.
+
+- reg: The base address of the UART register bank.
+
+- interrupts: A single interrupt specifier.
+
+- interrupt-parent: Defines the parent interrupt controller.
+
+- reg-shift : quantity to shift the register offsets by.  If this property is not present then the register offsets are not shifted.
+
+- reg-io-width : the size (in bytes) of the IO accesses that should be performed on the device.  If this property is not present then single byte accesses are used.
+
+- clock-frequency : the input clock frequency for the UART.
+
+- clocks : phandle to the input clock
+
+- clock-names : If provided must be "uart_ck".
+
+Example:
+
+uart0: serial@18810000 {
+		compatible = "snps,dw-apb-uart","ns16550a";
+		reg = <0x18810000 0x100>;
+		interrupts = <BSP_IRQ_OTHERS>;
+		interrupt-parent = <&cpuintc>;
+		clock-frequency = <24000000>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		clocks = <&clks RLX_CLK_UART_CK>;
+		clock-names = "uart_ck";
+	};

@@ -1,0 +1,20 @@
+Realtek internal audio CODEC
+
+Required properties:
+- compatible: "realtek,rts3903-acodec"
+- reg: physical base address of the device and length of memory mapped
+region
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+
+Example:
+
+	audio_codec: audio_codec@18500070 {
+		compatible = "realtek,rts3903-acodec";
+		reg = <0x18500070 0x64 0x18500100 0x18>;
+		resets = <&reset FORCE_RESET_CODEC>;
+		reset-names = "reset-codec";
+		status = "disabled";
+	};

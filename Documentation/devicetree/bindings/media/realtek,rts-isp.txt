@@ -1,0 +1,91 @@
+* Realtek isp controller
+
+this module consists of two parts: one is rts_mcu, the other is rts_soc_camera.
+
+1) rts_mcu
+
+Required properties:
+- compatible: Should be "realtek,rts3903-mcu"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain the isp interrupt number
+- clocks: Clock for mcu clk and hclk
+- clock-names: Name of clock
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+- subdev: Yes or no
+- fw-size: Length of MCU firmware
+- io-supply: Io power supply
+- analog-supply: Analog power supply
+- core-supply: Core power supply
+- status: Either "ok" or "disabled"
+- isp-cmd: Configuration of isp cmd
+
+Example:
+	rts_mcu: rts_mcu@18040000 {
+		compatible = "realtek,rts3903-mcu";
+		reg = <0x18040000 0x00010000>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_MCU8051>;
+		clocks = <&clks RLX_CLK_MCU_CK>, \
+				<&clks RLX_CLK_SYS_PLL3>;
+		clock-names = "mcu_clk", "hclk";
+		resets = <&reset FORCE_RESET_MCU_PREPARE>, \
+				<&reset FORCE_RESET_MCU_DONE>, \
+				<&reset FORCE_RESET_VIDEO>, \
+				<&reset FORCE_RESET_ISP>, \
+				<&reset FORCE_RESET_MIPI>;
+		reset-names = "mcu_prepare", \
+				"mcu_done", \
+				"video", \
+				"isp", \
+				"mipi";
+		subdev;
+		fw-size = <262144>;
+		io-supply = <&ldo3_reg>;
+		analog-supply = <&ldo5_reg>;
+		core-supply = <&dcdc2_reg>;
+		status = "disabled";
+
+		isp-cmd {
+			#address-cells = <1>;
+			#size-cells = <1>;
+			read {
+				reg = <0x00001100 48>;
+			};
+			write {
+				reg = <0x00001000 16>;
+			};
+		};
+	}
+
+2) rts_soc_camera
+
+Required properties:
+- compatible: Should be "realtek,rts3903-isp"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain the isp interrupt number
+- devtype: Hardware version
+- hw-id: Hardware id
+- is-fpga: Yes or no
+- isp-buffer-config: Configuration of isp buffer
+- td-config: Configuration of TD
+- status: Either "ok" or "disabled"
+
+Example:
+	rts_soc_camera: rts_soc_camera@18040000 {
+		compatible = "realtek,rts3903-isp";
+		reg = <0x18040000 0x00010000>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_MCU8051>;
+		devtype = "rts3913";
+		hw-id = <4>;
+		is-fpga;
+		isp-buffer-config = <&icfg0>, <&icfg1>, \
+					<&icfg2>, <&icfg3>;
+		td-config = <&tdcfg>;
+		status = "disabled";
+	};

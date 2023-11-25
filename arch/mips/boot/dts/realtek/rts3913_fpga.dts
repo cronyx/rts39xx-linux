@@ -1,0 +1,101 @@
+/dts-v1/;
+
+#include "rts3913_base.dtsi"
+
+/ {
+	model = "RTS3913 FPGA";
+	compatible = "realtek,rts_fpga", "realtek,rts3913";
+
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	reserved-memory {
+		videomem {
+			size = <0x1b00000>;
+		};
+	};
+
+	ocp {
+		rtl8168@18400000 {
+			status = "okay";
+		};
+
+		spi0: spic@0x18030000 {
+			status = "okay";
+
+			flash0: flash@0 {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				compatible = "mxic,m25p80", "jedec,spi-nor",
+					"spi-flash";
+				spi-max-frequency = <25000000>;
+				reg = <0>;
+				mode = <0>;
+				spi-num-slaves = <0>;
+				spi-fifo-size = <64>;
+				spi-baudr-div = <1>;
+			};
+
+		};
+
+		sdhc1: sdhc@18300000 {
+			status = "okay";
+		};
+
+		sdhc2: sdhc@18700000 {
+			status = "okay";
+		};
+
+		pinctrl: pinctrl@0x18800000UL {
+			status = "okay";
+		};
+
+		watchdog: watchdog@0x18862000 {
+			status = "okay";
+		};
+
+		thermal: thermal@0x18864000 {
+			status = "okay";
+		};
+
+		i2c: i2c@0x18880000 {
+			status = "okay";
+		};
+
+		timer: timer@18890000 {
+			status = "okay";
+		};
+
+		rts_mcu: rts_mcu@18040000 {
+			status = "okay";
+		};
+
+		rts_soc_camera@18040000 {
+			status = "okay";
+		};
+
+		rts_mjpeg_enc: rts_jpgenc@1805e000 {
+			status = "okay";
+		};
+
+		rts_osd_enc: rts_osd2@1805c000 {
+			status = "okay";
+		};
+
+		rts_h265_vpucodec@0x180c0000 {
+			status = "okay";
+		};
+
+		uart0: serial@18810000 {
+			status = "okay";
+		};
+
+		uart1: serial@18810100 {
+			status = "okay";
+		};
+
+		uart3: serial@18810200 {
+			status = "okay";
+		};
+	};
+};

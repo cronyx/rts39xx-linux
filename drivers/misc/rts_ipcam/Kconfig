@@ -1,0 +1,34 @@
+#
+# rts_ipcam misc device configuration
+#
+
+menu "Realtek IPCam misc devices"
+
+config DBG_IOMEM
+	tristate "IOMEM Driver for debug"
+	help
+	  If this driver is compiled as a module, it will be named dbg_iomem.
+
+config DBG_IOMEM_DMATEST
+	bool "IOMEM DMA Test"
+	depends on DBG_IOMEM
+	help
+	  Use IOMEM to test DMA
+
+config ENTER_KGDB_BY_GPIO
+	tristate "Enter kgdb utility"
+	default y
+	depends on KGDB
+	help
+	  This enable entering kgdb by pulling up gpio. This is useful when
+	  we can't access board by uart.
+
+if ENTER_KGDB_BY_GPIO
+	config KGDB_GPIO_NUM
+		int "KGDB_GPIO_NUM(1-16)"
+		range 1 16
+		default "5"
+endif
+
+endmenu
+

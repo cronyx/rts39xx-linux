@@ -1,0 +1,77 @@
+Realtek Pin Function Controller
+
+Required properties:
+- compatible: "realtek,rts3903-pinctrl"
+- reg: Address range of the pinctrl registers
+- interrupt: Should contain the pinctrl interrupt number
+- interrupt-parent: Should be the phandle for the interrupt controller
+  that services interrupts for this device
+
+Please refer to pinctrl-bindings.txt in this directory for details of the
+common pinctrl bindings used by client devices, including the meaning of the
+phrase "pin configuration node".
+
+Optional properties for pin configuration sub-nodes:
+  - bias-pull-up: Enable weak pull-up.
+  - bias-pull-down: Enable weak pull-down.
+  - bias-disable: Enable no pull.
+
+Example:
+
+	pinctrl: pinctrl@0x18800000UL {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		compatible = "realtek,rts3903-pinctrl";
+		reg = <0x18800000 0x10000>;
+		interrupts = <BSP_IRQ_OTHERS>;
+		interrupt-parent = <&cpuintc>;
+		status = "disabled";
+
+		serial8250_default_mode: serial8250_default {
+			default_mux {
+				function = "uartfunc";
+				groups = "uart1grp";
+			};
+		};
+
+		audio_default_mode: audio_default {
+			default_mux {
+				function = "dmicfunc";
+				groups = "dmicgrp";
+			};
+		};
+
+		usbd_default_mode: usbd_default {
+			default_mux {
+				function = "usbdfunc";
+				groups = "usbdgrp";
+			};
+		};
+
+		eth_default_mode: eth_default {
+			default_mux {
+				function = "etnledfunc";
+				groups = "etnled1grp";
+			};
+		};
+
+		pwm_default_mode: pwm_default {
+			default_mux {
+				function = "pwmfunc";
+				groups = "pwm0grp","pwm1grp",
+					"pwm2grp","pwm3grp";
+			};
+		};
+
+		isp_default_mode: isp_default {
+				default_mux {
+					function = "mcufunc";
+					groups = "mcugrp";
+				};
+				default_cfg {
+					pins = "GPIO50", "GPIO51";
+					bias-disable;
+				};
+		};
+	};

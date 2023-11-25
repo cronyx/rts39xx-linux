@@ -1,0 +1,24 @@
+/dts-v1/;
+
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+
+#include "rts3903n.dtsi"
+
+/ {
+	model = "RTS3903N PTZ";
+	compatible = "realtek,rts3903n_ptz", "realtek,rts3903";
+
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	reserved-memory {
+		videomem {
+			size = <0x1500000>;
+		};
+
+		audiomem {
+			size = <0x80000>;
+		};
+	};
+};

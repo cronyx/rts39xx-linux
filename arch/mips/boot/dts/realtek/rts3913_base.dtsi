@@ -1,0 +1,630 @@
+#include <dt-bindings/reset/rts-resets.h>
+#include <dt-bindings/reset/rts-sysmem.h>
+#include <dt-bindings/clock/rlx-clock.h>
+#include <dt-bindings/interrupt-controller/realtek,rts3913.h>
+#include <dt-bindings/gpio/realtek,rts3913.h>
+
+/ {
+	compatible = "realtek,rts3913";
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		video_reserved: videomem {
+			compatible = "shared-dma-pool";
+		};
+
+		audio_reserved: audiomem {
+			compatible = "shared-dma-pool";
+		};
+	};
+
+	clocks {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		oscillator: oscillator {
+			compatible = "fixed-clock";
+			clock-output-names = "sys_osc";
+			clock-frequency = <25000000>;
+			#clock-cells = <0>;
+		};
+	};
+
+	cpuintc: cpuintc@0 {
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		compatible = "mti,cpu-interrupt-controller";
+	};
+
+	vecintc: vecintc@0 {
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		compatible = "realtek,vec-interrupt-controller";
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu@0 {
+			compatible = "realtek,rlx5281";
+			device_type = "cpu";
+			reg = <0>;
+			clocks = <&clks RLX_CLK_CPU_CK>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_COMPARE>;
+			operating-points = <
+				/* kHz  uV */
+				500000  0
+				400000  0
+				300000  0
+				200000  0
+				>;
+		};
+	};
+
+	rtsmem: rts_isp_mem {
+		compatible = "realtek,rts3903-ispmem";
+		memory-region = <&video_reserved>;
+	};
+
+	ocp {
+		compatible = "sheipa-bus", "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		clks: clks@18861000  {
+			compatible = "realtek,rts3913-clocks";
+			#clock-cells = <1>;
+			reg = <0x18861000 0x1000 0x18864100 0x400>;
+		};
+
+		reset: reset-controller@18860000 {
+			compatible = "realtek,rts3903-reset";
+			reg = <0x18860000 0x1000>;
+			#reset-cells = <1>;
+		};
+
+		sysmem: reset-controller@18866000 {
+			compatible = "realtek,rts3903-sysmem";
+			reg = <0x18866000 0x1000>;
+			#reset-cells = <1>;
+		};
+
+		efuse: efuse@18865000 {
+			compatible = "realtek,rts3903-efuse";
+			reg = <0x18865000 0x1000>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			status = "disabled";
+		};
+
+		eth0: rtl8168@18400000 {
+			compatible = "realtek,rts3903-r8168";
+			reg = <0x18400000 0x10000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_ETHERNET>;
+			resets = <&reset FORCE_RESET_ETHERNET>,            \
+					<&sysmem SYS_MEM_SD_ETH>;
+			reset-names = "eth-reset", "eth-mem-up";
+			status = "disabled";
+
+			led_configs {
+				led_config@0 {
+					led-pin = <1>;
+					link-mode = <100>;
+					act-full = <1>;
+					act-high-active = <0>;
+				};
+				led_config@1 {
+					led-pin = <1>;
+					link-mode = <100>;
+					act-full = <1>;
+					act-high-active = <0>;
+				};
+				led_config@2 {
+					led-pin = <1>;
+					link-mode = <100>;
+					act-full = <1>;
+					act-high-active = <0>;
+				};
+			};
+		};
+
+		crypto: crypto@18600000 {
+			compatible = "realtek,rts3903-crypto";
+			reg = <0x18600000 0x10000>;
+			interrupt-parent = <&cpuintc>;
+			interrupts = <BSP_IRQ_ENCPY>;
+			clocks = <&clks RLX_CLK_CIPHER_CK>;
+			clock-names = "cipher_ck";
+			resets = <&reset FORCE_RESET_CIPHER>,
+				<&sysmem SYS_MEM_SD_CIPHER>;
+			reset-names = "rst", "sd";
+			status = "disabled";
+
+			aes = "ecb", "cbc", "ctr";
+		};
+
+		xb2: xb2@0x18870000 {
+			compatible = "realtek,rts3903-xb2";
+			reg = <0x18870000 0x30>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			interrupt-parent = <&cpuintc>;
+		};
+
+		spi0: spic@0x18030000 {
+			compatible = "realtek,rts3903-quadspi";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			bus_num = <0>;
+			reg = <0x18030000 0x10000>;
+			clocks = <&clks RLX_CLK_BUS_CK>;
+			clock-names = "spi_ck";
+			spi-deactivate-delay = <0>;
+			spi-max-frequency = <60000000>;
+			interrupt-parent = <&cpuintc>;
+			interrupts = <BSP_IRQ_SPI>;
+			status = "disabled";
+		};
+
+		spi1: spi@0x18830000 {
+			compatible = "realtek,dw-apb-ssi";
+			reg = <0x18830000 0x10000>;
+			clocks = <&clks RLX_CLK_XB2_CK>;
+			clock-names = "xb2_ck";
+			interrupt-parent = <&cpuintc>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			num-cs = <2>;
+			status = "disabled";
+		};
+
+		i2c: i2c@0x18880000 {
+			compatible = "realtek,rts3903-i2c";
+			reg = <0x18880000 0x1000>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			interrupt-parent = <&cpuintc>;
+			clocks = <&clks RLX_CLK_I2C_CK>;
+			clock-names = "i2c_ck";
+			resets = <&reset FORCE_RESET_I2C>;
+			reset-names = "reset-i2c";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+		};
+
+		dmahost: dma@18020000 {
+			compatible = "realtek,rts3903-dmac";
+			reg = <0x18020000 0x100>;
+			interrupt-parent = <&cpuintc>;
+			interrupts = <BSP_IRQ_DMA>;
+			clocks = <&clks RLX_CLK_DMA_CK>;
+			dma-channels = <2>;
+			dma-vchannels = <4>;
+			dma-masters = <1>;
+			chan_priority = <1>;
+			block_size = <0xfff>;
+			data-width = <2 2 0 0>;
+			status = "disabled";
+		};
+
+		usb_ehci: ehci@18100000 {
+			compatible = "realtek,rts3903-ehci";
+			reg = <0x18100000 0x1000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_USBHOST>;
+			resets = <&reset FORCE_RESET_U2HOST>;
+			reset-names = "reset-usb-host";
+			status = "disabled";
+		};
+
+		usb_ohci: ohci@18180000 {
+			compatible = "realtek,rts3903-ohci";
+			reg = <0x18180000 0x1000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_USBHOST>;
+			resets = <&reset FORCE_RESET_U2HOST>;
+			reset-names = "reset-usb-host";
+			status = "disabled";
+		};
+
+		usb_device: dwc_otg@18200000 {
+			compatible = "realtek,rts3903-otg";
+			reg = <0x18200000 0x40000>;
+			interrupt-parent = <&cpuintc>;
+			interrupts = <BSP_IRQ_USBDEV>;
+			resets = <&reset FORCE_RESET_U2DEV>,	\
+				 <&sysmem SYS_MEM_SD_U2DEV>;
+			reset-names = "reset-usb-device", "u2dev-sysmem-up";
+			status = "disabled";
+		};
+
+		usb_phy: usbphy@18140000 {
+			compatible = "realtek,rts3903-usbphy";
+			reg = <0x18140000 0x1000 0x18240000 0x1000>;
+			pinctrl-names = "default","sleep";
+			pinctrl-0 = <&usbd_default_mode>;
+			pinctrl-1 = < >;
+			status = "disabled";
+		};
+
+		sdhc1: sdhc@18300000 {
+			compatible = "realtek,rts3903-sdhc";
+			reg = <0x18300000 0x100000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_SD>;
+			resets = <&reset FORCE_RESET_SDIO1>,	\
+				 <&sysmem SYS_MEM_SD_SDIO1>;
+			reset-names = "reset-sd-device", "sdio-sysmem-up";
+			disable-wp;
+			cd-inverted;
+			bus-width = <4>;
+			cap-sd-highspeed;
+			cap-mmc-highspeed;
+			sd-uhs-sdr12;
+			sd-uhs-sdr25;
+			sd-uhs-sdr50;
+			status = "disabled";
+		};
+
+		sdhc2: sdhc@18700000 {
+			compatible = "realtek,rts3913-sdhc2";
+			reg = <0x18700000 0x100000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_SD>;
+			resets = <&reset FORCE_RESET_SDIO2>,    \
+				 <&sysmem SYS_MEM_SD_SDIO2>;
+			reset-names = "reset-sd-device", "sdio-sysmem-up";
+			disable-wp;
+			cd-inverted;
+			bus-width = <4>;
+			cap-sd-highspeed;
+			cap-mmc-highspeed;
+			sd-uhs-sdr12;
+			sd-uhs-sdr25;
+			sd-uhs-sdr50;
+			status = "disabled";
+		};
+
+		pwm: pwm@0x18820000 {
+			compatible = "realtek,rts3903-pwm";
+			reg = <0x18820000 0x10000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pwm_default_mode>;
+			status = "disabled";
+		};
+
+		watchdog: watchdog@0x18862000 {
+			compatible = "realtek,rts3913-wd";
+			reg = <0x18862000 0x10000>;
+			status = "disabled";
+		};
+
+		thermal: thermal@0x18864000 {
+			compatible = "realtek,rts3903-tm";
+			reg = <0x18864000 0x100>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			interrupt-parent = <&cpuintc>;
+			num-trips = <2>;
+			trip0-temp = <7500>;
+			trip1-temp = <8500>;
+			thermal_k = /bits/ 32 <14333 18538 23329
+				28806 33907 39053 44489	49630
+				54314 59211 64267 69322 74799
+				79665 84613 89826 94970 100121>;
+			status = "disabled";
+		};
+
+		ddrc: ddrc@0x18010000 {
+			compatible = "realtek,rts3903-ddrc";
+			reg = <0x18010000 0x100 0x18080000 0x100>;
+			status = "disabled";
+		};
+
+		saradc: saradc@0x18840000 {
+			compatible = "realtek,rts3903-saradc";
+			reg = <0x18840000 0x10000>;
+			status = "disabled";
+		};
+
+		pinctrl: pinctrl@0x18800000UL {
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges;
+			compatible = "realtek,rts3913-pinctrl";
+			reg = <0x18800000 0x10000>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			interrupt-parent = <&cpuintc>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio-numbers = <RTS_NUM_GPIOS>;
+			status = "disabled";
+
+			serial8250_default_mode: serial8250_default {
+				default_mux {
+					function = "uartfunc";
+					groups = "uart1grp";
+				};
+			};
+
+			audio_default_mode: audio_default {
+				default_mux {
+					function = "dmicfunc";
+					groups = "dmicgrp";
+				};
+			};
+
+			usbd_default_mode: usbd_default {
+				default_mux {
+					function = "usbdfunc";
+					groups = "usbdgrp";
+				};
+			};
+
+			eth_default_mode: eth_default {
+				default_mux {
+					function = "etnledfunc";
+					groups = "etnled1grp";
+				};
+			};
+
+			pwm_default_mode: pwm_default {
+				default_mux {
+					function = "pwmfunc";
+					groups = "pwm0grp","pwm1grp",
+						"pwm2grp","pwm3grp";
+				};
+			};
+		};
+
+		video-buffer-config {
+			icfg {
+				icfg0: icfg@0 {
+					#address-cells = <1>;
+					#size-cells = <1>;
+					y {
+						reg = <0x0 0x180>;
+					};
+					uv {
+						reg = <0x180 0x180>;
+					};
+				};
+				icfg1: icfg@1 {
+					#address-cells = <1>;
+					#size-cells = <1>;
+					y {
+						reg = <0x300 0xc0>;
+					};
+					uv {
+						reg = <0x3c0 0xc0>;
+					};
+				};
+				icfg2: icfg@2 {
+					#address-cells = <1>;
+					#size-cells = <1>;
+					y {
+						reg = <0x480 0x60>;
+					};
+					uv {
+						reg = <0x4e0 0x60>;
+					};
+				};
+				icfg3: icfg@3 {
+					#address-cells = <1>;
+					#size-cells = <1>;
+					y {
+						reg = <0x540 0x60>;
+					};
+					uv {
+						reg = <0x5a0 0x60>;
+					};
+				};
+			};
+
+			fcfg {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				tdcfg: fcfg@0 {
+					reg = <0 0x390>;
+				};
+				jpgcfg: fcfg@1 {
+					reg = <0x390 0x50>;
+				};
+				osd2cfg: fcfg@2 {
+					reg = <0x3e0 0x20>;
+				};
+			};
+		};
+
+		rts_mcu: rts_mcu@18040000 {
+			compatible = "realtek,rts3903-mcu";
+			reg = <0x18040000 0x00010000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_MCU8051>;
+			clocks = <&clks RLX_CLK_MCU_CK>, \
+					<&clks RLX_CLK_SYS_PLL3>;
+			clock-names = "mcu_clk", "hclk";
+			resets = <&reset FORCE_RESET_MCU_PREPARE>, \
+					<&reset FORCE_RESET_MCU_DONE>, \
+					<&reset FORCE_RESET_VIDEO>, \
+					<&reset FORCE_RESET_ISP>, \
+					<&reset FORCE_RESET_MIPI>;
+			reset-names = "mcu_prepare", \
+					"mcu_done", \
+					"video", \
+					"isp", \
+					"mipi";
+			subdev;
+			fw-size = <262144>;
+			io-supply = <>;
+			analog-supply = <>;
+			core-supply = <>;
+			status = "disabled";
+
+			isp-cmd {
+				#address-cells = <1>;
+				#size-cells = <1>;
+				read {
+					reg = <0x00001100 48>;
+				};
+				write {
+					reg = <0x00001000 16>;
+				};
+			};
+		};
+
+		rts_soc_camera: rts_soc_camera@18040000 {
+			compatible = "realtek,rts3903-isp";
+			reg = <0x18040000 0x00010000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_MCU8051>;
+			devtype = "rts3913";
+			hw-id = <4>;
+			is-fpga;
+			isp-buffer-config = <&icfg0>, <&icfg1>, \
+						<&icfg2>, <&icfg3>;
+			td-config = <&tdcfg>;
+			status = "disabled";
+		};
+
+		rts_mjpeg_enc: rts_jpgenc@1805e000 {
+			compatible = "realtek,rts3903-jpgenc";
+			reg = <0x1805e000 0x00002000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_MCU8051>;
+			clocks = <&clks RLX_CLK_JPEG_CK>;
+			clock-names = "jpeg_clk";
+			clock-frequency = <100000000>;
+			resets = <&reset FORCE_RESET_JPG>;
+			reset-names = "jpeg_rst";
+			jpg-config = <&jpgcfg>;
+			status = "disabled";
+		};
+
+		rts_osd_enc: rts_osd2@1805c000 {
+			compatible = "realtek,rts3903-osd2";
+			reg = <0x1805c000 0x00001ffd>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_MCU8051>;
+			osd-config = <&osd2cfg>;
+			status = "disabled";
+		};
+
+		rts_h265_vpucodec@0x180c0000 {
+			compatible = "realtek,rts3913-vpucodec";
+			reg = <0x180c0000 0x00040000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_H265>;
+			clocks = <&clks RLX_CLK_H265_CK>, \
+					<&clks RLX_CLK_H265_ACLK_CK>, \
+					<&clks RLX_CLK_H265_BCLK_CK>, \
+					<&clks RLX_CLK_H265_CCLK_CK>;
+			clock-names = "h265_ck", "h265_aclk_ck", \
+					"h265_bclk_ck", "h265_cclk_ck";
+			clock-frequency = <0 0 150000000 150000000>;
+			resets = <&reset FORCE_RESET_H265_AXI>, \
+					<&reset FORCE_RESET_H265_BPU>, \
+					<&reset FORCE_RESET_H265_CORE>, \
+					<&reset FORCE_RESET_H265>, \
+					<&sysmem SYS_MEM_SD_H265>;
+			reset-names = "axi", "bpu", "core", \
+					"reset", "sysmem-up";
+		};
+
+		audio_dma: audio_dma@18500000 {
+			compatible = "realtek,rts3903-adma";
+			reg = <0x18500000 0x64 0x185000E4 0xc>;
+			memory-region = <&audio_reserved>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_I2S>;
+			resets = <&sysmem SYS_MEM_SD_AUDIO>;
+			reset-names = "audio-sysmem-up";
+			pinctrl-names = "default","sleep";
+			pinctrl-0 = <&audio_default_mode>;
+			pinctrl-1 = < >;
+			status = "disabled";
+		};
+
+		audio_i2s: audio_i2s@18500064 {
+			compatible = "realtek,rts3903-adai";
+			reg = <0x18500064 0xc 0x185000D4 0x4 0x185000E0 0x4>;
+			resets = <&reset FORCE_RESET_I2S>,	\
+				 <&reset FORCE_RESET_SPDIF>;
+			reset-names = "reset-i2s", "reset-spdif";
+			status = "disabled";
+		};
+
+		audio_codec: audio_codec@18500070 {
+			compatible = "realtek,rts3903-acodec";
+			reg = <0x18500070 0x64 0x18500100 0x18>;
+			resets = <&reset FORCE_RESET_CODEC>;
+			reset-names = "reset-codec";
+			status = "disabled";
+		};
+
+		timer: timer@18890000 {
+			compatible = "realtek,rts3913-timer";
+			reg = <0x18890000 0x100>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <BSP_IRQ_TIMER>;
+			status = "disabled";
+		};
+
+		rtc: rtc@0x18850000 {
+			compatible = "realtek,rts3903-rtc";
+			reg = <0x18850000 0x1000>;
+			interrupts = <RTC_ALARM3_INT_IRQ>;
+			interrupt-parent = <&cpuintc>;
+			status = "disabled";
+		};
+
+		uart0: serial@18810000 {
+			compatible = "snps,dw-apb-uart","ns16550a";
+			reg = <0x18810000 0x100>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			interrupt-parent = <&cpuintc>;
+			clock-frequency = <24000000>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			clocks = <&clks RLX_CLK_UART_CK>;
+			clock-names = "uart_ck";
+			status = "disabled";
+		};
+
+		uart1: serial@18810100 {
+			compatible = "snps,dw-apb-uart","ns16550a";
+			reg = <0x18810100 0x100>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			interrupt-parent = <&cpuintc>;
+			clock-frequency = <24000000>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			current-speed = <57600>;
+			no-loopback-test;
+			clocks = <&clks RLX_CLK_UART_CK>;
+			clock-names = "uart_ck";
+			status = "disabled";
+		};
+
+		uart2: serial@18810200 {
+			compatible = "snps,dw-apb-uart","ns16550a";
+			reg = <0x18810200 0x100>;
+			interrupts = <BSP_IRQ_OTHERS>;
+			interrupt-parent = <&cpuintc>;
+			clock-frequency = <24000000>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			clocks = <&clks RLX_CLK_UART_CK>;
+			clock-names = "uart_ck";
+			status = "disabled";
+		};
+	};
+};

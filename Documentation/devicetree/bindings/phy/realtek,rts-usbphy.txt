@@ -1,0 +1,14 @@
+Realtek rts39xx SoC USB PHY
+=====================
+
+Required properties:
+--------------------
+ - compatible: Must be "realtek,rts3903-usbphy".
+ - reg : USB phy register range (address and length)
+
+Example:
+--------
+usb_phy: usbphy@18140000 {
+		compatible = "realtek,rts3903-usbphy";
+		reg = <0x18140000 0x1000 0x18240000 0x1000>;
+};

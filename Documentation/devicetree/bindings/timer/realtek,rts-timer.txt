@@ -1,0 +1,15 @@
+* Realtek Timer
+
+Required properties:
+- compatible: "realtek,rts3913-timer"
+- reg: Address range of the timer registers
+- interrupt: Should contain the timer interrupt number
+
+Example:
+
+	timer: timer@18890000 {
+		compatible = "realtek,rts3913-timer";
+		reg = <0x18890000 0x100>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_TIMER>;
+	};

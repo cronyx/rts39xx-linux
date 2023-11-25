@@ -1,0 +1,37 @@
+* Realtek DMA Controller
+
+Required properties:
+- compatible: "realtek,rts3903-dmac"
+- reg: Address range of the DMAC registers
+- interrupt: Should contain the DMAC interrupt number
+- clocks: Clock for dma controller
+- dma-channels: Number of channels supported by hardware
+- dma-vchannels: Number of virtual channels
+- dma-masters: Number of AHB masters supported by the controller
+- chan_priority: priority of channels. 0 (default): increase from chan 0->n, 1:
+  increase from chan n->0
+- block_size: Maximum block size supported by the controller
+- data-width: Maximum data width supported by hardware per AHB master
+  (in bytes, power of 2)
+
+Optional properties:
+- interrupt-parent: Should be the phandle for the interrupt controller
+  that services interrupts for this device
+- is_private: The device channels should be marked as private and not for by the
+  general purpose DMA channel allocator. False if not passed.
+
+Example:
+
+	dmahost: dma@18020000 {
+		compatible = "realtek,rts3903-dmac";
+		reg = <0x18020000 0x100>;
+		interrupt-parent = <&cpuintc>;
+		interrupts = <BSP_IRQ_DMA>;
+
+		dma-channels = <4>;
+		dma-requests = <4>;
+		dma-masters = <1>;
+		chan_priority = <1>;
+		block_size = <0xfff>;
+		data-width = <2 2 0 0>;
+	};

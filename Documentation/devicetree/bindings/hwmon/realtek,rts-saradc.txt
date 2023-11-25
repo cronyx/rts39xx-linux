@@ -1,0 +1,13 @@
+Realtek SARADC Controller
+
+Required properties:
+- compatible: "realtek,rts3903-saradc"
+- reg: Address range of the saradc registers
+
+Example:
+
+	saradc: saradc@0x18840000 {
+		compatible = "realtek,rts3903-saradc";
+		reg = <0x18840000 0x10000>;
+		status = "disabled";
+	};

@@ -1,0 +1,15 @@
+* Realtek Video Memory controller
+
+Required properties:
+- compatible: Should be "realtek,rts3903-ispmem"
+- memory-region: The video reserved memory
+- use-adma: Use adma or not
+
+Example:
+	rtsmem: rts_isp_mem {
+		compatible = "realtek,rts3903-ispmem";
+		memory-region = <&video_reserved>;
+		use-adma;
+	};
+
+

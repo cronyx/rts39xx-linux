@@ -1,0 +1,57 @@
+/dts-v1/;
+
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/gpio/gpio.h>
+
+#include "rts3903n.dtsi"
+#include "rts39xx_evb_pmu.dtsi"
+
+/ {
+	model = "RTS3903N EVB";
+	compatible = "realtek,rts3903n_evb", "realtek,rts3903";
+
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	reserved-memory {
+		videomem {
+			size = <0x1370000>;
+		};
+
+		audiomem {
+			size = <0x80000>;
+		};
+	};
+
+	ocp {
+//		gpio-keys {
+//			compatible = "gpio-keys";
+//			#address-cells = <1>;
+//			#size-cells = <0>;
+//
+//			button-wps {
+//				linux,code = <KEY_WPS_BUTTON>;
+//				label = "WPS";
+//				gpios = <&pinctrl 17 GPIO_ACTIVE_LOW>;
+//				debounce-interval= <20>;
+//			};
+//		};
+
+//		eth0: rtl8168@18400000 {
+//			pinctrl-names = "default";
+//			pinctrl-0 = <&eth_default_mode>;
+//		};
+
+//		rts_mcu: rts_mcu@18040000 {
+//			io-supply = <&ldo3_reg>;
+//			analog-supply = <&ldo5_reg>;
+//			core-supply = <&dcdc2_reg>;
+//		};
+	};
+
+//	ircut-gpio {
+//		gpios = "GPIO16";
+//		label = "GPIO UART0 TXD";
+//		index = <16>;
+//	};
+};

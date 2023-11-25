@@ -1,0 +1,18 @@
+Realtek PWM Controller
+
+Required properties:
+- compatible: "realtek,rts3903-pwm"
+- reg: Address range of the PWM registers
+- pinctrl-names: Set to "default"
+- pinctrl-0: List of phandles pointing to pin configuration nodes
+  for PWM module.
+
+Example:
+
+	pwm: pwm@0x18820000 {
+		compatible = "realtek,rts3903-pwm";
+		reg = <0x18820000 0x10000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pwm_default_mode>;
+		status = "disabled";
+	};

@@ -1,0 +1,31 @@
+* Realtek Mjpeg controller
+
+Required properties:
+- compatible: Should be "realtek,rts3903-jpgenc"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain the mjpeg interrupt number
+- clocks: Clock for mjpeg controller
+- clock-names: Name of clock
+- clock-frequency : Clock frequency for mjpeg controller
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+- jpg-config: Configuration of mjpeg
+- status: Either "ok" or "disabled"
+
+Example:
+	rts_mjpeg_enc: rts_jpgenc@1805e000 {
+		compatible = "realtek,rts3903-jpgenc";
+		reg = <0x1805e000 0x00002000>;
+		interrupt-parent = <&vecintc>;
+		interrupts = <BSP_IRQ_MCU8051>;
+		clocks = <&clks RLX_CLK_JPEG_CK>;
+		clock-names = "jpeg_clk";
+		clock-frequency = <100000000>;
+		resets = <&reset FORCE_RESET_JPG>;
+		reset-names = "jpeg_rst";
+		jpg-config = <&jpgcfg>;
+		status = "disabled";
+	};

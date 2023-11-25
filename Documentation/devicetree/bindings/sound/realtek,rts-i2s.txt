@@ -1,0 +1,21 @@
+Realtek I2S controller
+
+Required properties:
+- compatible: "realtek,rts3903-adai"
+- reg: physical base address of the I2S controller and length of memory mapped
+region
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property
+
+Example:
+
+	audio_i2s: audio_i2s@18500064 {
+		compatible = "realtek,rts3903-adai";
+		reg = <0x18500064 0xc 0x185000D4 0x4 0x185000E0 0x4>;
+		resets = <&reset FORCE_RESET_I2S>,	\
+				<&reset FORCE_RESET_SPDIF>;
+		reset-names = "reset-i2s", "reset-spdif";
+		status = "disabled";
+	};

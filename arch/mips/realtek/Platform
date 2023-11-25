@@ -1,0 +1,6 @@
+#
+# RLX Linux Platform BSP
+#
+platform-y	+= realtek/
+cflags-y	+= -I$(srctree)/arch/rlx/realtek
+load-y		= 0xffffffff80010000

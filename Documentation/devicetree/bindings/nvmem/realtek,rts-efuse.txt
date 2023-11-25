@@ -1,0 +1,23 @@
+= Realtek RTS-EFUSE device tree bindings =
+
+This binding is intended to represent RTS-EFUSE which is found in Realtek SOCs.
+
+Required properties:
+- compatible: should be "realtek,rts3903-efuse"
+- reg: Should contain registers location and length
+
+= Data cells =
+Are child nodes of RTS-EFUSE, bindings of which as described in
+bindings/nvmem/nvmem.txt
+
+Example:
+
+	efuse: efuse@18865000 {
+		compatible = "realtek,rts3903-efuse";
+		reg = <0x18865000 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+	};
+
+= Data consumers =
+Are device nodes which consume nvmem data cells.

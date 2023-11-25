@@ -1,0 +1,52 @@
+* Realtek rts39xx SoC Ethernet controller
+
+Required properties/subnode:
+- compatible: Should be "realtek,rts3903-r8168"
+- reg: Address and length of the register set for the device
+- interrupt-parent: Phandle of the parent interrupt controller
+- interrupts: Should contain ethernet controller interrupt
+- resets: List of phandle and reset specifier pairs, one pair for
+each reset signal that affects the device.
+- reset-names: List of reset signal name strings sorted in the same order as
+the resets property.
+- led_configs node: Ethernet status led configuration. Additional information is
+below.
+
+led_configs subnode indicates how the ethernet status leds work.
+Required properties:
+- led-pin: 1 means the led works, -1 means the led doesn't work.
+- link-mode: led blinks whether ethernet works on 10M, 100M or 1000M mode.
+- act-full: 1 means led works on all speed link, 0 means led works only on selected speed link.
+- act-high-active: 1 means led high active, 0 means led low active.
+
+Example:
+	eth0: ethernet@31060000 {
+			compatible = "realtek,rts3903-r8168";
+			reg = <0x18400000 0x10000>;
+			interrupt-parent = <&vecintc>;
+			interrupts = <2>;
+
+			resets = <&reset 17>, <&reset 18>;
+			reset-names = "reset-eth", "reset-eth-clr";
+
+			led_configs {
+				led_config@0 {
+					led-pin = <1>;
+					link-mode = <100>;
+					act-full = <1>;
+					act-high-active = <0>;
+				};
+				led_config@1 {
+					led-pin = <1>;
+					link-mode = <100>;
+					act-full = <1>;
+					act-high-active = <0>;
+				};
+				led_config@2 {
+					led-pin = <1>;
+					link-mode = <100>;
+					act-full = <1>;
+					act-high-active = <0>;
+				};
+			};
+	};

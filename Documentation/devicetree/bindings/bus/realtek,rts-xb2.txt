@@ -1,0 +1,17 @@
+Realtek XB2 Controller
+
+Required properties:
+- compatible: "realtek,rts3903-xb2"
+- reg: Address range of the XB2 registers
+- interrupt: Should contain the XB2 interrupt number
+- interrupt-parent: Should be the phandle for the interrupt controller
+  that services interrupts for this device
+
+Example:
+
+	xb2: xb2@0x18870000 {
+		compatible = "realtek,rts3903-xb2";
+		reg = <0x18870000 0x30>;
+		interrupts = <BSP_IRQ_OTHERS>;
+		interrupt-parent = <&cpuintc>;
+	};
